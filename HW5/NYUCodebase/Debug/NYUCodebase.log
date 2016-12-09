@@ -1,0 +1,10 @@
+﻿  main.cpp
+c:\users\risin\documents\nyu\gamep\game-programming\hw5\nyucodebase\main.cpp(68): warning C4018: '<' : signed/unsigned mismatch
+c:\users\risin\documents\nyu\gamep\game-programming\hw5\nyucodebase\main.cpp(71): warning C4018: '<' : signed/unsigned mismatch
+c:\users\risin\documents\nyu\gamep\game-programming\hw5\nyucodebase\main.cpp(84): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+c:\users\risin\documents\nyu\gamep\game-programming\hw5\nyucodebase\main.cpp(85): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+c:\users\risin\documents\nyu\gamep\game-programming\hw5\nyucodebase\main.cpp(87): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+c:\users\risin\documents\nyu\gamep\game-programming\hw5\nyucodebase\main.cpp(96): warning C4018: '<' : signed/unsigned mismatch
+c:\users\risin\documents\nyu\gamep\game-programming\hw5\nyucodebase\main.cpp(112): warning C4018: '<' : signed/unsigned mismatch
+c:\users\risin\documents\nyu\gamep\game-programming\hw5\nyucodebase\main.cpp(157): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+  NYUCodebase.vcxproj -> C:\Users\risin\Documents\NYU\GameP\Game-Programming\HW5\Debug\NYUCodebase.exe

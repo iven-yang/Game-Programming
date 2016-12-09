@@ -2,7 +2,8 @@
 #include "Mainframe.h"
 
 int main(int argc, char *argv[]){
-	Mainframe maine;
-	while (!maine.UpdateAndRender()){}
-	return NULL;
+	Mainframe game;
+
+	while (!game.UpdateAndRender()){}
+	return 0;
 }
