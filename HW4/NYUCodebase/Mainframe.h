@@ -113,6 +113,7 @@ void Mainframe::reset(){
 	delay = 0.0f;
 	enemyCount = 0;
 
+	GLuint SheetSpriteTexture2 = LoadTexture("stomp.png", GL_RGBA);
 	GLuint SheetSpriteTexture = LoadTexture("characters_1.png", GL_RGBA);
 	GLuint blocktype1 = LoadTexture("castleMid.png", GL_RGBA);
 	GLuint blocktype2 = LoadTexture("castleCenter.png", GL_RGBA);
@@ -130,10 +131,6 @@ void Mainframe::reset(){
 
 	for (int i = 0; i < 2; i++){
 		blocks[i + 4].width *= 6.0f;
-	}
-
-	for (int i = 0; i < 2; i++){
-		blocks[i + 6].width *= 11.0f;
 	}
 
 	for (int i = 0; i < 2; i++){
@@ -180,33 +177,9 @@ void Mainframe::reset(){
 	blocks[9].x = right;
 	blocks[9].y = bottom + 17.0f * blocksize / 2.0f;
 
-	fill_n(enemy, 25, Entity(SheetSpriteTexture, 9.0f / 16.0f, 1.0f / 16.0f, 1.0f / 16.0f, 1.0f / 16.0f, 1.5f, true));
-	for (int i = 0; i < 25; i++){
-		enemy[i].u.push_back(10.0f / 16.0f);
-		enemy[i].v.push_back(1.0f / 16.0f);
-		enemy[i].u.push_back(11.0f / 16.0f);
-		enemy[i].v.push_back(1.0f / 16.0f);
-		enemy[i].u.push_back(9.0f / 16.0f);
-		enemy[i].v.push_back(2.0f / 16.0f);
-		enemy[i].u.push_back(10.0f / 16.0f);
-		enemy[i].v.push_back(2.0f / 16.0f);
-		enemy[i].u.push_back(11.0f / 16.0f);
-		enemy[i].v.push_back(2.0f / 16.0f);
-		enemy[i].u.push_back(0.0f);
-		enemy[i].v.push_back(202.0f / 256.0f);
-	}
+	fill_n(enemy, 25, Entity(SheetSpriteTexture, 1.0f, 1.005f, 1.0f / 16.0f, 1.0f / 16.0f, 1.0f, true));
 
-	user = Entity(SheetSpriteTexture, 6.0f / 16.0f, 1.0f / 16.0f, 1.0f / 16.0f, 1.0f / 16.0f, 1.5f, true, true);
-	user.u.push_back(7.0f / 16.0f);
-	user.v.push_back(1.0f / 16.0f);
-	user.u.push_back(8.0f / 16.0f);
-	user.v.push_back(1.0f / 16.0f);
-	user.u.push_back(6.0f / 16.0f);
-	user.v.push_back(2.0f / 16.0f);
-	user.u.push_back(7.0f / 16.0f);
-	user.v.push_back(2.0f / 16.0f);
-	user.u.push_back(8.0f / 16.0f);
-	user.v.push_back(2.0f / 16.0f);
+	user = Entity(SheetSpriteTexture2, 0.2f, 0.15f, 0.6f, 0.8f, 0.25f, true, true);
 	user.x = 0.0f;
 	user.y = -0.75f;
 	user.v_x = 0.0f;
@@ -215,8 +188,6 @@ void Mainframe::reset(){
 	user.f_y = 1.0f;
 	user.a_x = 0.0f;
 	user.elapsed = 0.0f;
-	user.faceleft = false;
-
 }
 
 Mainframe::Mainframe() {
@@ -246,7 +217,7 @@ Mainframe::Mainframe() {
 
 void Mainframe::Init() {
 	SDL_Init(SDL_INIT_VIDEO);
-	displayWindow = SDL_CreateWindow("My Game", SDL_WINDOWPOS_CENTERED,
+	displayWindow = SDL_CreateWindow("IvenStomp", SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL);
 	SDL_GLContext context = SDL_GL_CreateContext(displayWindow);
 	SDL_GL_MakeCurrent(displayWindow, context);
@@ -276,7 +247,7 @@ void Mainframe::RenderMainMenu(){
 	glClearColor(0.4f, 0.5f, 0.9f, 0.0f);
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	drText(font, "Brandario", 0.6f, -0.28f, 1.0f, 1.0f, 1.0f, 1.0f, -1.87f, 1.0f);
+	drText(font, "IvenStomp", 0.6f, -0.28f, 1.0f, 1.0f, 1.0f, 1.0f, -1.87f, 1.0f);
 	drText(font, "Press SPACE to play", 0.4f, -0.2f, 1.0f, 1.0f, 1.0f, 1.0f, -1.87f, -1.3f);
 	drText(font, "Arrow keys to move.", 0.2f, -0.1f, 1.0f, 1.0f, 1.0f, 1.0f, -1.8f, 0.4f);
 	drText(font, "Space to jump, can jump again in midair", 0.2f, -0.1f, 1.0f, 1.0f, 1.0f, 1.0f, -1.8f, 0.2f);
@@ -285,7 +256,7 @@ void Mainframe::RenderMainMenu(){
 
 void Mainframe::createEnemy(){
 	for (int i = 0; i < 25; i++){
-		if (!enemy[i].alive && !enemy[i].coin){
+		if (!enemy[i].alive){
 			enemy[i].width = 1.0f / 16.0f;
 			enemy[i].height = 1.0f / 16.0f;
 			enemy[i].elapsed = 0.0f;
@@ -305,7 +276,6 @@ void Mainframe::createEnemy(){
 			enemy[i].f_y = 0.35f;
 			enemy[i].v_y = 0.0f;
 			enemyCount++;
-			enemy[i].coin = false;
 			enemy[i].scale = 1.5f;
 			break;
 		}
@@ -317,16 +287,13 @@ void Mainframe::RenderGameLevel(){
 
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for (int i = 0; i < 25; i++){
+	for (int i = 0; i < 25; i++)
 		enemy[i].render();
-	}
 
-	for (int i = 0; i < 10; i++){
+	for (int i = 0; i < 10; i++)
 		blocks[i].render();
-	}
 
 	drText(font, "Score", 0.3f, -0.15f, 1.0f, 1.0f, 1.0f, 1.0f, 1.5f, 1.85f);
-
 	drText(font, to_string(score), 0.3f, -0.15f, 1.0f, 1.0f, 1.0f, 1.0f, 1.5f, 1.6f);
 
 	user.render();
@@ -346,10 +313,8 @@ void Mainframe::RenderGameOver(){
 
 
 void Mainframe::Update() {
-
-	if (state == STATE_GAME_LEVEL){
+	if (state == STATE_GAME_LEVEL)
 		UpdateGameLevel();
-	}
 
 	SDL_Event event;
 
@@ -382,8 +347,6 @@ void Mainframe::Update() {
 				state = STATE_GAME_LEVEL;
 				reset();
 			}
-
-
 		}
 	}
 }
@@ -401,23 +364,7 @@ void Mainframe::UpdateGameLevel(){
 	}
 
 	for (int i = 0; i < 25; i++){
-		if (enemy[i].coin){
-			enemy[i].resetcollision();
-
-			enemy[i].v_y = lerp(enemy[i].v_y, 0.0f, FIXED_TIMESTEP * enemy[i].f_y);
-			enemy[i].v_y += enemy[i].a_y * FIXED_TIMESTEP;
-			enemy[i].v_y += gravity * FIXED_TIMESTEP;
-			enemy[i].y += enemy[i].v_y * FIXED_TIMESTEP;
-			for (int j = 0; j < 10; j++){
-				if (enemy[i].collisiony(blocks[j])){
-					enemy[i].v_y = 0.0f;
-				}
-			}
-
-			enemy[i].elapsed += FIXED_TIMESTEP;
-		}
-
-		else if (enemy[i].alive){
+		if (enemy[i].alive){
 			if (enemy[i].y < -2.5f){
 				enemy[i].alive = false;
 				enemyCount--;
@@ -427,30 +374,7 @@ void Mainframe::UpdateGameLevel(){
 			enemy[i].elapsed += FIXED_TIMESTEP;
 
 			animation = fmod(enemy[i].elapsed, FIXED_TIMESTEP*15.0f);
-			enemy[i].faceleft = (enemy[i].v_x < 0);
-			if (enemy[i].faceleft) {
-				if (animation < FIXED_TIMESTEP*5.0f){
-					enemy[i].frame = 0;
-				}
-				else if (animation < FIXED_TIMESTEP*10.0f){
-					enemy[i].frame = 1;
-				}
-				else {
-					enemy[i].frame = 2;
-				}
-			}
-			else {
-				if (animation < FIXED_TIMESTEP*5.0f){
-					enemy[i].frame = 3;
-				}
-				else if (animation < FIXED_TIMESTEP*10.0f){
-					enemy[i].frame = 4;
-				}
-				else {
-					enemy[i].frame = 5;
-				}
-			}
-
+			
 			enemy[i].resetcollision();
 
 			enemy[i].v_y = lerp(enemy[i].v_y, 0.0f, FIXED_TIMESTEP * enemy[i].f_y);
@@ -487,36 +411,6 @@ void Mainframe::UpdateGameLevel(){
 
 	animation = fmod(user.elapsed, FIXED_TIMESTEP*15.0f);
 
-	if (user.faceleft) {
-		if (fabs(user.v_x) < 0.2f){
-			user.frame = 1;
-		}
-		else if (animation < FIXED_TIMESTEP*5.0f){
-			user.frame = 0;
-		}
-		else if (animation < FIXED_TIMESTEP*10.0f){
-			user.frame = 1;
-		}
-		else {
-			user.frame = 2;
-		}
-	}
-	else {
-		if (fabs(user.v_x) < 0.2f){
-			user.frame = 4;
-		}
-		else if (animation < FIXED_TIMESTEP*5.0f){
-			user.frame = 3;
-		}
-		else if (animation < FIXED_TIMESTEP*10.0f){
-			user.frame = 4;
-		}
-		else {
-			user.frame = 5;
-		}
-	}
-
-
 	user.resetcollision();
 
 	user.v_y = lerp(user.v_y, 0.0f, FIXED_TIMESTEP * user.f_y);
@@ -546,18 +440,9 @@ void Mainframe::UpdateGameLevel(){
 				enemy[i].alive = false;
 				enemy[i].v_y += 4.0f;
 				enemy[i].elapsed = 10000.0f;
-				enemy[i].coin = true;
 				enemy[i].width = 40.0f / 256.0f;
 				enemy[i].height = 40.0f / 256.0f;
 				enemy[i].scale = 0.4f;
-			}
-		}
-
-		if (enemy[i].coin){
-			if (enemy[i].elapsed > 10000.6f && user.collision(enemy[i])){
-				score += 200;
-				enemy[i].coin = false;
-				enemyCount--;
 			}
 		}
 	}
@@ -590,23 +475,11 @@ void Mainframe::UpdateGameLevel(){
 		}
 	}
 
-	for (int i = 0; i < 25; i++){
-		if (enemy[i].coin){
-			if (enemy[i].elapsed > 10005.0f){
-				enemy[i].coin = false;
-			}
-		}
-	}
-
-
 	if (keys[SDL_SCANCODE_LEFT]){
 		user.v_x -= 18.0f * FIXED_TIMESTEP;
-		user.faceleft = true;
-
 	}
 	if (keys[SDL_SCANCODE_RIGHT]){
 		user.v_x += 18.0f * FIXED_TIMESTEP;
-		user.faceleft = false;
 	}
 }
 

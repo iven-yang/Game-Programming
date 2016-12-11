@@ -1,5 +1,8 @@
 
 #pragma once
+#ifdef _WINDOWS
+#include <GL/glew.h>
+#endif
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <SDL_image.h>
@@ -7,15 +10,26 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-
+#include "Matrix.h"
+#include "ShaderProgram.h"
 using namespace std;
+#ifdef _WINDOWS
+#define RESOURCE_FOLDER ""
+#else
+#define RESOURCE_FOLDER "NYUCodebase.app/Contents/Resources/"
+#endif
+
+Matrix projectionMatrix;
+Matrix viewMatrix;
+Matrix modelMatrix;
+ShaderProgram* program;
 
 class Entity{
 public:
 	Entity(){};
 	Entity(GLuint textureID0, float u0, float v0, float width, float height, float scale, bool dynamic, bool alive);
 
-	void draw(int frame);
+	void draw();
 	void render();
 
 	GLuint textureID;
@@ -26,14 +40,11 @@ public:
 	bool collisiony(Entity entity);
 	bool collision(Entity entity);
 
-	vector<float> u, v;
+	float u, v;
 	float scale;
-	bool faceleft;
-
 	float x, y;
 
 	float elapsed;
-	int frame;
 
 	float width;
 	float height;
@@ -42,15 +53,15 @@ public:
 
 	float f_x, f_y;
 
-	bool alive, coin, dynamic;
+	bool alive, dynamic;
 
 	bool collidedTop, collidedBottom, collidedRight, collidedLeft;
 };
 
 Entity::Entity(GLuint textureID, float u0, float v0, float width, float height, float scale, bool dynamic = false, bool alive = false) :
-textureID(textureID), width(width), height(height), scale(scale), dynamic(dynamic), alive(alive), frame(0), coin(false), a_y(0.0f), collidedTop(false), collidedBottom(false), collidedRight(false), collidedLeft(false){
-	u.push_back(u0);
-	v.push_back(v0);
+textureID(textureID), width(width), height(height), scale(scale), dynamic(dynamic), alive(alive), a_y(0.0f), collidedTop(false), collidedBottom(false), collidedRight(false), collidedLeft(false){
+	u=u0;
+	v=v0;
 };
 
 void Entity::resetcollision(){
@@ -143,7 +154,7 @@ bool Entity::collisiony(Entity entity){
 	}
 }
 
-void Entity::draw(int frame) {
+void Entity::draw() {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
@@ -156,7 +167,7 @@ void Entity::draw(int frame) {
 	glVertexPointer(2, GL_FLOAT, 0, quad);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-	GLfloat quadUVs[] = { u[frame], v[frame], u[frame], v[frame] + height, u[frame] + width, v[frame] + height, u[frame] + width, v[frame] };
+	GLfloat quadUVs[] = { u, v, u, v + height, u + width, v + height, u + width, v };
 	glTexCoordPointer(2, GL_FLOAT, 0, quadUVs);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -170,12 +181,9 @@ void Entity::draw(int frame) {
 
 void Entity::render(){
 	if (dynamic == false) {
-		draw(frame);
+		draw();
 	}
 	else if (alive == true){
-		draw(frame);
-	}
-	else if (coin == true){
-		draw(6);
+		draw();
 	}
 }
